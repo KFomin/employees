@@ -1,1 +1,12 @@
-<p>tags works!</p>
+<div class="tags-list">
+  <h2>Tags List</h2>
+  <table mat-table [dataSource]="tags" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Tag Name </th>
+      <td mat-cell *matCellDef="let tag"> {{ tag.name }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['name']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name'];"></tr>
+  </table>
+</div>
