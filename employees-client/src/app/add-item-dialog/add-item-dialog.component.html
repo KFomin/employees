@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Add New {{ data.type }}</h2>
+<mat-dialog-content>
+  <form>
+    <!-- Поля для работника -->
+    <div *ngIf="data.type === 'employee'">
+      <mat-form-field>
+        <label>First Name</label>
+        <input matInput [(ngModel)]="itemData.firstName" name="firstName" required>
+
+        <label>Last Name</label>
+        <input matInput [(ngModel)]="itemData.lastName" name="lastName" required>
+
+        <label>Phone Number</label>
+        <input matInput [(ngModel)]="itemData.phoneNo" name="phoneNo" required>
+      </mat-form-field>
+    </div>
+
+    <!-- Поля для офиса -->
+    <div *ngIf="data.type === 'office'">
+      <mat-form-field>
+        <label>Office Name</label>
+        <input matInput [(ngModel)]="itemData.name" name="officeName" required>
+      </mat-form-field>
+      <mat-form-field>
+        <label>City</label>
+        <input matInput [(ngModel)]="itemData.city" name="city" required>
+      </mat-form-field>
+    </div>
+
+    <!-- Поля для тега -->
+    <div *ngIf="data.type === 'tag'">
+      <mat-form-field>
+        <label>Tag Name</label>
+        <input matInput [(ngModel)]="itemData.name" name="tagName" required>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="itemData">Add</button>
+</mat-dialog-actions>
