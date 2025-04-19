@@ -44,7 +44,7 @@ export class OfficesComponent implements OnInit {
         this.offices = data;
       },
       (error) => {
-        console.error('Ошибка при получении офисов:', error);
+        console.error('Failed to get offices:', error);
       }
     );
   }

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AppService} from '../app.service'; // Импортируем основной сервис
+import {AppService} from '../app.service';
 import {Observable} from 'rxjs';
 import {Tag} from '../models';
 
@@ -7,7 +7,7 @@ import {Tag} from '../models';
   providedIn: 'root'
 })
 export class TagsService {
-  private endpoint = '/tags'; // Эндпоинт для тегов
+  private endpoint = '/tags';
 
   constructor(private appService: AppService) {
   }

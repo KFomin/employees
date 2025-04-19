@@ -21,6 +21,7 @@ export class NavbarComponent {
 
   openAddDialog(): void {
     const currentRoute = this.router.url.split('/')[1];
+
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       data: {type: currentRoute}
     });

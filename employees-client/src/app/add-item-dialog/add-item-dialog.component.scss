@@ -1,0 +1,18 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 30vw;
+  @media (max-width: 640px) {
+    min-width: 85vw;
+  }
+}
+
+mat-form-field {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+}

@@ -29,22 +29,22 @@ import {TagsService} from './tags.service';
   styleUrl: './tags.component.scss'
 })
 export class TagsComponent implements OnInit {
-  tags: Tag[] = []; // Список тегов
+  tags: Tag[] = [];
 
   constructor(private tagsService: TagsService) {
   }
 
   ngOnInit(): void {
-    this.loadTags(); // Загружаем данные тегов при инициализации компонента
+    this.loadTags();
   }
 
   loadTags(): void {
     this.tagsService.getTags().subscribe(
       (data) => {
-        this.tags = data; // Сохраняем данные
+        this.tags = data;
       },
       (error) => {
-        console.error('Ошибка при получении тегов:', error);
+        console.error('Failed to get tags:', error);
       }
     );
   }

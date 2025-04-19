@@ -1,42 +1,69 @@
 <h2 mat-dialog-title>Add New {{ data.type }}</h2>
 <mat-dialog-content>
-  <form>
-    <!-- Поля для работника -->
-    <div *ngIf="data.type === 'employee'">
-      <mat-form-field>
-        <label>First Name</label>
+  <form class="form-fields">
+    <div *ngIf="data.type === 'employees'">
+      <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
         <input matInput [(ngModel)]="itemData.firstName" name="firstName" required>
+      </mat-form-field>
 
-        <label>Last Name</label>
+      <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
         <input matInput [(ngModel)]="itemData.lastName" name="lastName" required>
+      </mat-form-field>
 
-        <label>Phone Number</label>
+      <mat-form-field appearance="fill">
+        <mat-label>Phone Number</mat-label>
         <input matInput [(ngModel)]="itemData.phoneNo" name="phoneNo" required>
       </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Office</mat-label>
+        <mat-select [(ngModel)]="itemData.officeId" name="officeId" required>
+          <mat-option *ngFor="let office of offices" [value]="office._id">{{ office.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Birthdate</mat-label>
+        <input matInput [(ngModel)]="itemData.birthdate" [matDatepicker]="picker" name="birthdate" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div>
+        <label>Select Tags:</label>
+        <div *ngFor="let tag of tags">
+          <mat-checkbox (change)="onTagSelect(tag)">
+            {{ tag.name }}
+          </mat-checkbox>
+        </div>
+      </div>
     </div>
 
-    <!-- Поля для офиса -->
-    <div *ngIf="data.type === 'office'">
-      <mat-form-field>
-        <label>Office Name</label>
+    <div *ngIf="data.type === 'offices'">
+      <mat-form-field appearance="fill">
+        <mat-label>Office Name</mat-label>
         <input matInput [(ngModel)]="itemData.name" name="officeName" required>
       </mat-form-field>
-      <mat-form-field>
-        <label>City</label>
+
+      <mat-form-field appearance="fill">
+        <mat-label>City</mat-label>
         <input matInput [(ngModel)]="itemData.city" name="city" required>
       </mat-form-field>
     </div>
 
-    <!-- Поля для тега -->
-    <div *ngIf="data.type === 'tag'">
-      <mat-form-field>
-        <label>Tag Name</label>
+    <div *ngIf="data.type === 'tags'">
+      <mat-form-field appearance="fill">
+        <mat-label>Tag Name</mat-label>
         <input matInput [(ngModel)]="itemData.name" name="tagName" required>
       </mat-form-field>
     </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="itemData">Add</button>
+  <button mat-button (click)="onClose()">Cancel</button>
+  <button mat-button [mat-dialog-close]="getDialogData()" color="primary">
+    Add
+  </button>
 </mat-dialog-actions>

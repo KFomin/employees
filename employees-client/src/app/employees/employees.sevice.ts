@@ -7,7 +7,7 @@ import {Employee} from '../models';
   providedIn: 'root'
 })
 export class EmployeesService {
-  private endpoint = '/employees'; // Эндпоинт для работников
+  private endpoint = '/employees';
 
   constructor(private appService: AppService) {
   }

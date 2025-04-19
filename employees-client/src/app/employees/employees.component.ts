@@ -47,7 +47,7 @@ export class EmployeesComponent implements OnInit {
         this.employees = data;
       },
       (error) => {
-        console.error('Ошибка при получении работников:', error);
+        console.error('Failed to get employees:', error);
       }
     );
   }

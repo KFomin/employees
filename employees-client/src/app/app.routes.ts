@@ -7,5 +7,5 @@ export const routes: Routes = [
   { path: 'employees', component: EmployeesComponent },
   { path: 'offices', component: OfficesComponent },
   { path: 'tags', component: TagsComponent },
-  { path: '', redirectTo: '/employees', pathMatch: 'full' },  // Редирект на работников по умолчанию
+  { path: '', redirectTo: '/employees', pathMatch: 'full' },
 ];
