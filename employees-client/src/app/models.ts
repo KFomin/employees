@@ -11,8 +11,8 @@ export interface Office {
 
 export interface Employee {
   _id: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   officeId: Office;
   birthdate: string;
   phoneNo: string;
