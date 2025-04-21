@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Add New {{ data.type }}</h2>
 <mat-dialog-content>
-  <form class="form-fields">
+  <form>
     <div *ngIf="data.type === 'employees'">
       <mat-form-field appearance="fill">
         <mat-label>First Name</mat-label>
@@ -18,23 +18,25 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Office</mat-label>
-        <mat-select [(ngModel)]="itemData.officeId" name="officeId" required>
-          <mat-option *ngFor="let office of offices" [value]="office._id">{{ office.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
         <mat-label>Birthdate</mat-label>
         <input matInput [(ngModel)]="itemData.birthdate" [matDatepicker]="picker" name="birthdate" required>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
+      <mat-form-field appearance="fill">
+        <mat-label>Office</mat-label>
+        <mat-select [(ngModel)]="itemData.officeId" name="officeId" required>
+          <mat-option *ngFor="let office of offices" [value]="office._id">{{ office.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <div>
         <label>Select Tags:</label>
         <div *ngFor="let tag of tags">
-          <mat-checkbox (change)="onTagSelect(tag)">
+          <mat-checkbox
+            [checked]="isTagSelected(tag)"
+            (change)="onTagSelect(tag)">
             {{ tag.name }}
           </mat-checkbox>
         </div>
@@ -61,9 +63,17 @@
     </div>
   </form>
 </mat-dialog-content>
+
 <mat-dialog-actions>
   <button mat-button (click)="onClose()">Cancel</button>
-  <button mat-button (click)="addEmployee()" color="primary">
-    Add
-  </button>
+  @if (this.data.action === 'add') {
+    <button mat-button (click)="onAddClicked()" color="primary">
+      Add
+    </button>
+  }
+  @if (this.data.action === 'edit') {
+    <button mat-button (click)="onApplyClicked()" color="primary">
+      Apply
+    </button>
+  }
 </mat-dialog-actions>

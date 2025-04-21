@@ -1,7 +1,7 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { Employee } from './employees.schema';
-import { CreateEmployeeDto } from './create-employee.dto';
+import { EmployeeDto } from './employee.dto';
 
 @Controller('employees')
 export class EmployeesController {
@@ -14,7 +14,7 @@ export class EmployeesController {
   }
 
   @Post()
-  async create(@Body() createEmployeeDto: CreateEmployeeDto) {
+  async create(@Body() createEmployeeDto: EmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
   }
 
@@ -26,6 +26,17 @@ export class EmployeesController {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateEmployeeDto: EmployeeDto) {
+    const updatedEmployee = await this.employeesService.updateEmployee(id, updateEmployeeDto);
+
+    if (!updatedEmployee) {
+      throw new BadRequestException('Employee not found.');
+    }
+
+    return updatedEmployee;
   }
 }
 

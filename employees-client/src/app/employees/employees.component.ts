@@ -13,6 +13,8 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Employee } from '../models';
 import { MatButton } from '@angular/material/button';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-employees',
@@ -35,7 +37,7 @@ import { MatButton } from '@angular/material/button';
 export class EmployeesComponent implements OnInit {
   employees: Employee[] = [];
 
-  constructor(private employeesService: EmployeesService) {
+  constructor(private employeesService: EmployeesService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -53,12 +55,29 @@ export class EmployeesComponent implements OnInit {
     );
   }
 
+  editEmployee(employee: Employee): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent,
+      {
+        data: {
+          type: 'employees',
+          action: 'edit',
+          entity: employee,
+        },
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadEmployees();
+      }
+    });
+  }
+
   deleteEmployee(employee: Employee): void {
     if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
       this.employeesService.deleteEmployee(employee._id).subscribe(() => {
         this.loadEmployees();
       }, error => {
-        console.error('Ошибка при удалении работника:', error);
+        console.error('Failed to remove employee:', error);
       });
     }
   }

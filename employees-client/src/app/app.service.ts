@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +21,9 @@ export class AppService {
 
   delete<T>(url: string): Observable<T> {
     return this.http.delete<T>(`${this.apiBaseUrl}${url}`);
+  }
+
+  put<T>(url: string, body: any): Observable<T> {
+    return this.http.put<T>(`${this.apiBaseUrl}${url}`, body);
   }
 }

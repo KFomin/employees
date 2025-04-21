@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {AppService} from '../app.service';
-import {Observable} from 'rxjs';
-import {Employee} from '../models';
+import { Injectable } from '@angular/core';
+import { AppService } from '../app.service';
+import { Observable } from 'rxjs';
+import { Employee } from '../models';
 
 
 export interface EmployeeDTO {
@@ -15,7 +15,7 @@ export interface EmployeeDTO {
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EmployeesService {
   private endpoint = '/employees';
@@ -30,7 +30,12 @@ export class EmployeesService {
   createEmployee(employeeData: EmployeeDTO): Observable<Employee> {
     return this.appService.post<Employee>(this.endpoint, employeeData);
   }
+
   deleteEmployee(id: string): Observable<void> {
     return this.appService.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  updateEmployee(id: string, employeeData: EmployeeDTO): Observable<Employee> {
+    return this.appService.put<Employee>(`${this.endpoint}/${id}`, employeeData);
   }
 }

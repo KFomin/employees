@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogClose,
   MatDialogContent, MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
@@ -43,7 +42,7 @@ import { EmployeesService } from '../employees/employees.sevice';
   templateUrl: './add-item-dialog.component.html',
   styleUrl: './add-item-dialog.component.scss',
 })
-export class AddItemDialogComponent {
+export class AddItemDialogComponent implements OnInit {
   itemData: any = {};
   offices: Office[] = [];
   tags: Tag[] = [];
@@ -51,13 +50,32 @@ export class AddItemDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<AddItemDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { type: string },
+    @Inject(MAT_DIALOG_DATA) public data: { type: string, action: 'add' | 'edit', entity: any },
     private officesService: OfficesService,
     private tagsService: TagsService,
     private employeesService: EmployeesService,
   ) {
     this.loadOffices();
     this.loadTags();
+  }
+
+  ngOnInit() {
+    if (this.data.entity) {
+      this.itemData = { ...this.data.entity };
+
+      if (this.itemData.birthdate) {
+        this.itemData.birthdate = new Date(this.itemData.birthdate);
+      }
+
+      this.itemData.officeId = this.data.entity.officeId._id;
+
+      if (this.data.entity.tags) {
+        this.selectedTags = this.data.entity.tags.map((tag: Tag) => ({
+          _id: tag._id,
+          name: tag.name,
+        }));
+      }
+    }
   }
 
   onClose(): void {
@@ -77,14 +95,15 @@ export class AddItemDialogComponent {
   }
 
   onTagSelect(tag: Tag): void {
-    if (!this.selectedTags.includes(tag)) {
+    if (!this.selectedTags.some(selectedTag => selectedTag._id === tag._id)) {
       this.selectedTags.push(tag);
     } else {
-      this.selectedTags = this.selectedTags.filter(t => t !== tag);
+      this.selectedTags = this.selectedTags.filter(selectedTag => selectedTag._id !== tag._id);
     }
+    console.log(this.selectedTags);
   }
 
-  addEmployee(): void {
+  onAddClicked(): void {
     const employeeData = this.getDialogData();
 
     this.employeesService.createEmployee(employeeData).subscribe(
@@ -98,11 +117,32 @@ export class AddItemDialogComponent {
     );
   }
 
+  onApplyClicked() {
+    const employeeData = this.getDialogData();
+
+    this.employeesService.updateEmployee(this.data.entity._id, employeeData).subscribe(
+      (response) => {
+        console.log('Employee updated successfully:', response);
+        this.dialogRef.close(response);
+      },
+      (error) => {
+        console.error('Error while updating employee:', error);
+      },
+    );
+  }
+
   getDialogData() {
+    const tagMap = new Map(this.selectedTags.map(tag => [tag._id, tag]));
+    const uniqueTags = [...tagMap.values()];
+    console.log(this.selectedTags);
     return {
       ...this.itemData,
       birthdate: this.itemData.birthdate ? this.itemData.birthdate.toISOString() : null,
-      tags: this.selectedTags.map(tag => tag._id),
+      tags: uniqueTags.map(tag => tag._id),
     };
+  }
+
+  isTagSelected(tag: Tag) {
+    return this.selectedTags.some(selectedTag => selectedTag._id === tag._id);
   }
 }

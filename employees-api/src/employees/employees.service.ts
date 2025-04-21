@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Employee } from './employees.schema';
-import { CreateEmployeeDto } from './create-employee.dto';
+import { EmployeeDto } from './employee.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -20,7 +20,7 @@ export class EmployeesService {
       .exec();
   }
 
-  async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
+  async create(createEmployeeDto: EmployeeDto): Promise<Employee> {
     const newEmployee = new this.employeeModel(createEmployeeDto);
     return newEmployee.save();
   }
@@ -30,5 +30,11 @@ export class EmployeesService {
     if (!result) {
       throw new Error('Employee not found');
     }
+  }
+
+  async updateEmployee(id: string, updateEmployeeDto: EmployeeDto): Promise<Employee | null> {
+    let uniqueTags = new Set(updateEmployeeDto.tags);
+    updateEmployeeDto.tags = Array.from(uniqueTags.values());
+    return this.employeeModel.findByIdAndUpdate(id, updateEmployeeDto, { new: true });
   }
 }
