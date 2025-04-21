@@ -21,7 +21,14 @@
       <td mat-cell *matCellDef="let employee"> {{ employee.officeId.name }}</td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['firstName', 'lastName', 'phoneNo', 'officeId']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['firstName', 'lastName', 'phoneNo', 'officeId'];"></tr>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let employee">
+        <button mat-button color="warn" (click)="deleteEmployee(employee)">Delete</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['firstName', 'lastName', 'phoneNo', 'officeId', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['firstName', 'lastName', 'phoneNo', 'officeId', 'actions'];"></tr>
   </table>
 </div>

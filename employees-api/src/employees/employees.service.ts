@@ -24,4 +24,11 @@ export class EmployeesService {
     const newEmployee = new this.employeeModel(createEmployeeDto);
     return newEmployee.save();
   }
+
+  async deleteEmployee(id: string): Promise<void> {
+    const result = await this.employeeModel.findByIdAndDelete(id);
+    if (!result) {
+      throw new Error('Employee not found');
+    }
+  }
 }

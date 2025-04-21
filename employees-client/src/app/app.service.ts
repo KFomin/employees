@@ -18,4 +18,8 @@ export class AppService {
   post<T>(url: string, body: any): Observable<T> {
     return this.http.post<T>(`${this.apiBaseUrl}${url}`, body);
   }
+
+  delete<T>(url: string): Observable<T> {
+    return this.http.delete<T>(`${this.apiBaseUrl}${url}`);
+  }
 }

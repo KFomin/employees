@@ -30,4 +30,7 @@ export class EmployeesService {
   createEmployee(employeeData: EmployeeDTO): Observable<Employee> {
     return this.appService.post<Employee>(this.endpoint, employeeData);
   }
+  deleteEmployee(id: string): Observable<void> {
+    return this.appService.delete<void>(`${this.endpoint}/${id}`);
+  }
 }
