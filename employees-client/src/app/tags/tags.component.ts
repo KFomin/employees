@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -6,10 +6,10 @@ import {
   MatHeaderCell,
   MatHeaderCellDef, MatHeaderRow,
   MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
+  MatTable,
 } from '@angular/material/table';
-import {Tag} from '../models';
-import {TagsService} from './tags.service';
+import { Tag } from '../models';
+import { TagsService } from './tags.service';
 
 @Component({
   selector: 'app-tags',
@@ -23,10 +23,10 @@ import {TagsService} from './tags.service';
     MatHeaderRowDef,
     MatRowDef,
     MatRow,
-    MatHeaderRow
+    MatHeaderRow,
   ],
   templateUrl: './tags.component.html',
-  styleUrl: './tags.component.scss'
+  styleUrl: './tags.component.scss',
 })
 export class TagsComponent implements OnInit {
   tags: Tag[] = [];
@@ -35,17 +35,10 @@ export class TagsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTags();
+    this.tagsService.tags$.subscribe(tags => {
+      this.tags = tags;
+    });
+    this.tagsService.loadTags();
   }
 
-  loadTags(): void {
-    this.tagsService.getTags().subscribe(
-      (data) => {
-        this.tags = data;
-      },
-      (error) => {
-        console.error('Failed to get tags:', error);
-      }
-    );
-  }
 }

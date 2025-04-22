@@ -33,8 +33,6 @@ export class EmployeesService {
   }
 
   async updateEmployee(id: string, updateEmployeeDto: EmployeeDto): Promise<Employee | null> {
-    let uniqueTags = new Set(updateEmployeeDto.tags);
-    updateEmployeeDto.tags = Array.from(uniqueTags.values());
     return this.employeeModel.findByIdAndUpdate(id, updateEmployeeDto, { new: true });
   }
 }

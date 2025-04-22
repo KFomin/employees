@@ -18,6 +18,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { EmployeesService } from '../employees/employees.sevice';
+import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
 
 @Component({
   selector: 'app-add-item-dialog',
@@ -50,16 +51,26 @@ export class AddItemDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddItemDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { type: string, action: 'add' | 'edit', entity: any },
+    @Inject(MAT_DIALOG_DATA) public data: {
+      type: 'employees' | 'offices' | 'tags',
+      action: 'add' | 'edit',
+      entity: any
+    },
     private officesService: OfficesService,
     private tagsService: TagsService,
     private employeesService: EmployeesService,
   ) {
-    this.loadOffices();
-    this.loadTags();
   }
 
   ngOnInit() {
+    this.tagsService.tags$.subscribe((tags: Tag[]) => {
+      this.tags = tags;
+    });
+
+    this.officesService.offices$.subscribe((offices: Office[]) => {
+      this.offices = offices;
+    });
+
     if (this.data.entity) {
       this.itemData = { ...this.data.entity };
 
@@ -82,18 +93,6 @@ export class AddItemDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  loadOffices(): void {
-    this.officesService.getOffices().subscribe(offices => {
-      this.offices = offices;
-    });
-  }
-
-  loadTags(): void {
-    this.tagsService.getTags().subscribe(tags => {
-      this.tags = tags;
-    });
-  }
-
   onTagSelect(tag: Tag): void {
     if (!this.selectedTags.some(selectedTag => selectedTag._id === tag._id)) {
       this.selectedTags.push(tag);
@@ -104,17 +103,34 @@ export class AddItemDialogComponent implements OnInit {
   }
 
   onAddClicked(): void {
-    const employeeData = this.getDialogData();
+    const dialogData = this.getDialogData();
+    switch (this.data.type) {
+      case 'offices':
+        this.officesService.createOffice(dialogData).subscribe(
+          (response) => {
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while adding employee:', error);
+          },
+        );
+        break;
+      case 'tags':
+        break;
+      case 'employees':
+        this.employeesService.createEmployee(dialogData).subscribe(
+          (response) => {
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while adding employee:', error);
+          },
+        );
+        break;
+      default:
+        break;
+    }
 
-    this.employeesService.createEmployee(employeeData).subscribe(
-      (response) => {
-        console.log('Employee added successfully:', response);
-        this.dialogRef.close(response);
-      },
-      (error) => {
-        console.error('Error while adding employee:', error);
-      },
-    );
   }
 
   onApplyClicked() {

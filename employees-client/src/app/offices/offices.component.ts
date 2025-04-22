@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {Office} from '../models';
-import {OfficesService} from './offices.service';
+import { Component, OnInit } from '@angular/core';
+import { Office } from '../models';
+import { OfficesService } from './offices.service';
 import {
   MatCell,
   MatCellDef,
@@ -8,8 +8,11 @@ import {
   MatHeaderCell,
   MatHeaderCellDef, MatHeaderRow,
   MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
+  MatTable,
 } from '@angular/material/table';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-offices',
@@ -23,29 +26,51 @@ import {
     MatHeaderRowDef,
     MatRowDef,
     MatRow,
-    MatHeaderRow
+    MatHeaderRow,
+    MatButton,
   ],
   templateUrl: './offices.component.html',
-  styleUrl: './offices.component.scss'
+  styleUrl: './offices.component.scss',
 })
 export class OfficesComponent implements OnInit {
   offices: Office[] = [];
 
-  constructor(private officesService: OfficesService) {
+  constructor(private officesService: OfficesService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.loadOffices();
+    this.officesService.offices$.subscribe(offices => {
+      this.offices = offices;
+    });
+    this.officesService.loadOffices();
   }
 
-  loadOffices(): void {
-    this.officesService.getOffices().subscribe(
-      (data) => {
-        this.offices = data;
-      },
-      (error) => {
-        console.error('Failed to get offices:', error);
+
+  openEditDialog(office: Office): void {
+    const dialogRef =
+      this.dialog.open(AddItemDialogComponent, {
+        data: {
+          type: 'offices',
+          action: 'edit',
+          entity: office || {},
+        },
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(result);
+        this.officesService.loadOffices();
       }
-    );
+    });
+  }
+
+  deleteOffice(id: string): void {
+    if (confirm('Are you sure you want to delete this office?')) {
+      this.officesService.deleteOffice(id).subscribe(() => {
+        this.officesService.loadOffices();
+      }, error => {
+        console.error('Error while removing office:', error);
+      });
+    }
   }
 }

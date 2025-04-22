@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AppService } from '../app.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Employee } from '../models';
 
 
@@ -19,12 +19,15 @@ export interface EmployeeDTO {
 })
 export class EmployeesService {
   private endpoint = '/employees';
+  employees$: BehaviorSubject<Employee[]> = new BehaviorSubject<Employee[]>([]);
 
   constructor(private appService: AppService) {
   }
 
-  getEmployees(): Observable<Employee[]> {
-    return this.appService.get<Employee[]>(this.endpoint);
+  loadEmployees() {
+    this.appService.get<Employee[]>(this.endpoint).subscribe((employees) => {
+      this.employees$.next(employees);
+    });
   }
 
   createEmployee(employeeData: EmployeeDTO): Observable<Employee> {

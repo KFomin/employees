@@ -10,7 +10,6 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { HttpClient } from '@angular/common/http';
 import { Employee } from '../models';
 import { MatButton } from '@angular/material/button';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
@@ -41,18 +40,10 @@ export class EmployeesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadEmployees();
-  }
-
-  loadEmployees(): void {
-    this.employeesService.getEmployees().subscribe(
-      (data) => {
-        this.employees = data;
-      },
-      (error) => {
-        console.error('Failed to get employees:', error);
-      },
-    );
+    this.employeesService.employees$.subscribe((employees) => {
+      this.employees = employees;
+    });
+    this.employeesService.loadEmployees();
   }
 
   editEmployee(employee: Employee): void {
@@ -67,7 +58,7 @@ export class EmployeesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadEmployees();
+        this.employeesService.loadEmployees();
       }
     });
   }
@@ -75,7 +66,7 @@ export class EmployeesComponent implements OnInit {
   deleteEmployee(employee: Employee): void {
     if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
       this.employeesService.deleteEmployee(employee._id).subscribe(() => {
-        this.loadEmployees();
+        this.employeesService.loadEmployees();
       }, error => {
         console.error('Failed to remove employee:', error);
       });

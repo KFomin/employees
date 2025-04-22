@@ -1,18 +1,21 @@
-import {Injectable} from '@angular/core';
-import {AppService} from '../app.service';
-import {Observable} from 'rxjs';
-import {Tag} from '../models';
+import { Injectable } from '@angular/core';
+import { AppService } from '../app.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Tag } from '../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TagsService {
   private endpoint = '/tags';
+  tags$: BehaviorSubject<Tag[]> = new BehaviorSubject<Tag[]>([]);
 
   constructor(private appService: AppService) {
   }
 
-  getTags(): Observable<Tag[]> {
-    return this.appService.get<Tag[]>(this.endpoint);
+  loadTags() {
+    this.appService.get<Tag[]>(this.endpoint).subscribe((tags: Tag[]) => {
+      this.tags$.next(tags);
+    });
   }
 }
