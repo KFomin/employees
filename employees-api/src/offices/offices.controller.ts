@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException } from '@nestjs/common';
 import { OfficesService } from './offices.service';
 import { Office } from './offices.schema';
 import { OfficeDto } from './office.dto';
+import { EmployeesService } from '../employees/employees.service';
 
 @Controller('offices')
 export class OfficesController {
-  constructor(private readonly officesService: OfficesService) {
+  constructor(private readonly officesService: OfficesService,
+              private readonly employeesService: EmployeesService) {
   }
 
   @Get()
@@ -25,6 +27,10 @@ export class OfficesController {
 
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
+    const officeInUse = await this.employeesService.isOfficeUsed(id);
+    if (officeInUse) {
+      throw new BadRequestException('Cannot delete office because it is in use by an employee.');
+    }
     return this.officesService.delete(id);
   }
 }

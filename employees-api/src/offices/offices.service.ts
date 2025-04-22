@@ -28,4 +28,5 @@ export class OfficesService {
   async delete(id: string): Promise<void> {
     await this.officeModel.findByIdAndDelete(id);
   }
+
 }

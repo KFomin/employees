@@ -35,4 +35,9 @@ export class EmployeesService {
   async updateEmployee(id: string, updateEmployeeDto: EmployeeDto): Promise<Employee | null> {
     return this.employeeModel.findByIdAndUpdate(id, updateEmployeeDto, { new: true });
   }
+
+  async isOfficeUsed(officeId: string): Promise<boolean> {
+    const employeeCount = await this.employeeModel.countDocuments({ officeId });
+    return employeeCount > 0;
+  }
 }

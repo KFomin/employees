@@ -15,5 +15,7 @@ import { EmployeeSchema } from './employees.schema';
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
+  exports: [EmployeesService],
 })
-export class EmployeesModule {}
+export class EmployeesModule {
+}
