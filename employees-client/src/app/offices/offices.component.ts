@@ -63,7 +63,7 @@ export class OfficesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result);
+        this.app.showMessage('Office successfully updated');
         this.officesService.loadOffices();
       }
     });
@@ -81,6 +81,7 @@ export class OfficesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.app.showMessage('Office successfully created');
         this.officesService.loadOffices();
       }
     });
@@ -89,10 +90,18 @@ export class OfficesComponent implements OnInit {
 
   deleteOffice(id: string): void {
     if (confirm('Are you sure you want to delete this office?')) {
-      this.officesService.deleteOffice(id).subscribe(() => {
-        this.officesService.loadOffices();
-      }, error => {
-        console.error('Error while removing office:', error);
+      this.officesService.deleteOffice(id).subscribe({
+        next: () => {
+          this.officesService.loadOffices();
+        },
+        error: (error) => {
+          console.log(error);
+          this.app.showMessage(
+            `Error deleting office ${error.error.message ? error.error.message : ''}`,
+            'Close',
+            5000,
+          );
+        },
       });
     }
   }

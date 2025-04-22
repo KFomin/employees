@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -11,13 +12,29 @@ export class AppService {
   route$: BehaviorSubject<string> = new BehaviorSubject('');
   searchTerm$: BehaviorSubject<string> = new BehaviorSubject('');
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private snackBar: MatSnackBar,
+  ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.route$.next(event.url.split('/')[1]);
         this.searchTerm$.next('');
       }
     });
+  }
+
+  showMessage(message: string,
+              action: string = 'Close',
+              duration: number = 2500): void {
+    this.snackBar.open(message, action, {
+      duration: duration,
+    });
+  }
+
+  errorMessage(error: { error?: { message?: string } }) {
+    return `Error occured ${error.error?.message ? (':' + error.error.message) : ''}`;
   }
 
   get<T>(url: string, search?: string): Observable<T> {

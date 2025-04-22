@@ -18,7 +18,8 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { EmployeesService } from '../employees/employees.sevice';
-import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
+import { AppService } from '../app.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-add-item-dialog',
@@ -59,6 +60,7 @@ export class AddItemDialogComponent implements OnInit {
     private officesService: OfficesService,
     private tagsService: TagsService,
     private employeesService: EmployeesService,
+    private app: AppService,
   ) {
   }
 
@@ -105,84 +107,62 @@ export class AddItemDialogComponent implements OnInit {
   }
 
   onAddClicked(): void {
-    const dialogData = this.getDialogData();
-    switch (this.data.type) {
-      case 'offices':
-        this.officesService.createOffice(dialogData).subscribe(
-          (response) => {
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while adding office:', error);
-          },
-        );
-        break;
-      case 'tags':
-        this.tagsService.createTag(dialogData).subscribe(
-          (response) => {
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while adding tag:', error);
-          },
-        );
-        break;
-      case 'employees':
-        this.employeesService.createEmployee(dialogData).subscribe(
-          (response) => {
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while adding employee:', error);
-          },
-        );
-        break;
-      default:
-        break;
-    }
-
+    this.doAddRequest(this.data.type).subscribe(
+      {
+        next: (response) => {
+          this.dialogRef.close(response);
+        },
+        error: (error) => {
+          this.app.showMessage(
+            `Error while adding employee: ${error.error?.message ? error.error.message : ''}`,
+            'Close',
+            5000,
+          );
+        },
+      },
+    );
   }
 
-  onApplyClicked() {
-    const entityData = this.getDialogData();
-    switch (this.data.type) {
-      case 'employees':
-        this.employeesService.updateEmployee(this.data.entity._id, entityData).subscribe(
-          (response) => {
-            console.log('Employee updated successfully:', response);
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while updating employee:', error);
-          },
-        );
-        break;
-      case 'tags':
-        this.tagsService.updateTag(this.data.entity._id, entityData).subscribe(
-          (response) => {
-            console.log('Tag updated successfully:', response);
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while updating tag:', error);
-          },
-        );
-        break;
+  doAddRequest(type: 'offices' | 'employees' | 'tags'): Observable<any> {
+    const dialogData = this.getDialogData();
+    switch (type) {
       case 'offices':
-        this.officesService.updateOffice(this.data.entity._id, entityData).subscribe(
-          (response) => {
-            console.log('Office updated successfully:', response);
-            this.dialogRef.close(response);
-          },
-          (error) => {
-            console.error('Error while updating office:', error);
-          },
-        );
-        break;
-      default:
-        break;
+        return this.officesService.createOffice(dialogData);
+      case 'tags':
+        return this.tagsService.createTag(dialogData);
+      case 'employees':
+        return this.employeesService.createEmployee(dialogData);
     }
+  }
 
+  onApplyClicked(): void {
+    this.doUpdateRequest(this.data.type).subscribe(
+      {
+        next: (response) => {
+          this.app.showMessage('Updated successfully');
+          this.dialogRef.close(response);
+        },
+        error: (error) => {
+          this.app.showMessage(
+            `Error while updating : ${error.error?.message ? error.error.message : ''}`,
+            'Close',
+            5000,
+          );
+        },
+      },
+    );
+  }
+
+  doUpdateRequest(type: 'offices' | 'employees' | 'tags'): Observable<any> {
+    const entityData = this.getDialogData();
+    switch (type) {
+      case 'employees':
+        return this.employeesService.updateEmployee(this.data.entity._id, entityData);
+      case 'tags':
+        return this.tagsService.updateTag(this.data.entity._id, entityData);
+      case 'offices':
+        return this.officesService.updateOffice(this.data.entity._id, entityData);
+    }
   }
 
   getDialogData() {

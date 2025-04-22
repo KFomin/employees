@@ -77,6 +77,7 @@ export class EmployeesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.app.showMessage('Employee successfully updated');
         this.employeesService.loadEmployees();
       }
     });
@@ -93,6 +94,7 @@ export class EmployeesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.app.showMessage('Employee successfully added');
         this.employeesService.loadEmployees();
       }
     });
@@ -101,11 +103,15 @@ export class EmployeesComponent implements OnInit {
 
   deleteEmployee(employee: Employee): void {
     if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
-      this.employeesService.deleteEmployee(employee._id).subscribe(() => {
-        this.employeesService.loadEmployees();
-      }, error => {
-        console.error('Failed to remove employee:', error);
-      });
+      this.employeesService.deleteEmployee(employee._id).subscribe(
+        {
+          next: () => {
+            this.employeesService.loadEmployees();
+          },
+          error: (error) => {
+            console.error('Failed to remove employee:', error);
+          },
+        });
     }
   }
 

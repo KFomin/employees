@@ -66,6 +66,7 @@ export class TagsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.app.showMessage('Tag successfully updated');
         this.tagsService.loadTags();
       }
     });
@@ -83,6 +84,7 @@ export class TagsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.app.showMessage('Tag successfully added');
         this.tagsService.loadTags();
       }
     });
@@ -91,11 +93,18 @@ export class TagsComponent implements OnInit {
 
   deleteTag(tag: Tag): void {
     if (confirm(`Are you sure you want to delete ${tag.name}?`)) {
-      this.tagsService.deleteTag(tag._id).subscribe(() => {
-        this.tagsService.loadTags();
-      }, error => {
-        console.error('Failed to remove tag:', error);
-      });
+      this.tagsService.deleteTag(tag._id).subscribe(
+        () => {
+          this.tagsService.loadTags();
+        },
+        (error) => {
+          this.app.showMessage(
+            `Error deleting tag ${error.error.message ? (':' + error.error.message) : ''}`,
+            'Close',
+            5000,
+          );
+          ;
+        });
     }
   }
 
