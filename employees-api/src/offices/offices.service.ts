@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Office } from './offices.schema';
-import { OfficeDto } from './office.dto';
+import { Office, OfficeDto } from './offices.schema';
 
 @Injectable()
 export class OfficesService {

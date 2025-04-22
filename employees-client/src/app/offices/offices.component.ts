@@ -92,6 +92,7 @@ export class OfficesComponent implements OnInit {
     if (confirm('Are you sure you want to delete this office?')) {
       this.officesService.deleteOffice(id).subscribe({
         next: () => {
+          this.app.showMessage('Office successfully deleted');
           this.officesService.loadOffices();
         },
         error: (error) => {

@@ -93,18 +93,19 @@ export class TagsComponent implements OnInit {
 
   deleteTag(tag: Tag): void {
     if (confirm(`Are you sure you want to delete ${tag.name}?`)) {
-      this.tagsService.deleteTag(tag._id).subscribe(
-        () => {
+      this.tagsService.deleteTag(tag._id).subscribe({
+        next: () => {
+          this.app.showMessage('Tag successfully deleted');
           this.tagsService.loadTags();
         },
-        (error) => {
+        error: (error) => {
           this.app.showMessage(
             `Error deleting tag ${error.error.message ? (':' + error.error.message) : ''}`,
             'Close',
             5000,
           );
-          ;
-        });
+        },
+      });
     }
   }
 

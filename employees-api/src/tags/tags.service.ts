@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Tag } from './tags.schema';
-import { TagDto } from './tag.dto';
+import { Tag, TagDto } from './tags.schema';
 
 @Injectable()
 export class TagsService {
