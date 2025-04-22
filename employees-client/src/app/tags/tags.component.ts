@@ -13,6 +13,8 @@ import { TagsService } from './tags.service';
 import { MatButton } from '@angular/material/button';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AppService } from '../app.service';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'app-tags',
@@ -28,6 +30,7 @@ import { MatDialog } from '@angular/material/dialog';
     MatRow,
     MatHeaderRow,
     MatButton,
+    SearchBarComponent,
   ],
   templateUrl: './tags.component.html',
   styleUrl: './tags.component.scss',
@@ -38,6 +41,7 @@ export class TagsComponent implements OnInit {
   constructor(
     private tagsService: TagsService,
     private dialog: MatDialog,
+    private app: AppService,
   ) {
   }
 
@@ -67,6 +71,24 @@ export class TagsComponent implements OnInit {
     });
   }
 
+
+  addTag(): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent,
+      {
+        data: {
+          type: 'tags',
+          action: 'add',
+        },
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.tagsService.loadTags();
+      }
+    });
+  }
+
+
   deleteTag(tag: Tag): void {
     if (confirm(`Are you sure you want to delete ${tag.name}?`)) {
       this.tagsService.deleteTag(tag._id).subscribe(() => {
@@ -75,6 +97,10 @@ export class TagsComponent implements OnInit {
         console.error('Failed to remove tag:', error);
       });
     }
+  }
+
+  performSearch(searchTerm: string) {
+    this.app.searchTerm$.next(searchTerm);
   }
 
 }

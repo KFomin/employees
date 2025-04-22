@@ -13,6 +13,8 @@ import {
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { AppService } from '../app.service';
 
 @Component({
   selector: 'app-offices',
@@ -28,6 +30,7 @@ import { MatButton } from '@angular/material/button';
     MatRow,
     MatHeaderRow,
     MatButton,
+    SearchBarComponent,
   ],
   templateUrl: './offices.component.html',
   styleUrl: './offices.component.scss',
@@ -35,7 +38,9 @@ import { MatButton } from '@angular/material/button';
 export class OfficesComponent implements OnInit {
   offices: Office[] = [];
 
-  constructor(private officesService: OfficesService, private dialog: MatDialog) {
+  constructor(private officesService: OfficesService,
+              private dialog: MatDialog,
+              private app: AppService) {
   }
 
   ngOnInit(): void {
@@ -64,6 +69,24 @@ export class OfficesComponent implements OnInit {
     });
   }
 
+
+  addOffice(): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent,
+      {
+        data: {
+          type: 'offices',
+          action: 'add',
+        },
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.officesService.loadOffices();
+      }
+    });
+  }
+
+
   deleteOffice(id: string): void {
     if (confirm('Are you sure you want to delete this office?')) {
       this.officesService.deleteOffice(id).subscribe(() => {
@@ -72,5 +95,9 @@ export class OfficesComponent implements OnInit {
         console.error('Error while removing office:', error);
       });
     }
+  }
+
+  performSearch(searchTerm: string) {
+    this.app.searchTerm$.next(searchTerm);
   }
 }

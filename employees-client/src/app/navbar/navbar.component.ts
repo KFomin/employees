@@ -19,38 +19,6 @@ import { TagsService } from '../tags/tags.service';
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
-  constructor(private dialog: MatDialog,
-              private router: Router,
-              private employees: EmployeesService,
-              private offices: OfficesService,
-              private tags: TagsService,
-  ) {
-  }
-
-  openAddDialog(): void {
-    const currentRoute = this.router.url.split('/')[1];
-
-    const dialogRef = this.dialog.open(AddItemDialogComponent, {
-      data: { type: currentRoute, action: 'add' },
-    });
-
-    dialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
-        switch (currentRoute) {
-          case 'employees':
-            this.employees.loadEmployees();
-            break;
-          case 'tags':
-            this.tags.loadTags();
-            break;
-          case 'offices':
-            this.offices.loadOffices();
-            break;
-          default:
-            break;
-        }
-      }
-
-    });
+  constructor() {
   }
 }

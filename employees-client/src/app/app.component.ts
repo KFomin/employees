@@ -3,14 +3,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { OfficesService } from './offices/offices.service';
 import { TagsService } from './tags/tags.service';
-import { SearchBarComponent } from './search-bar/search-bar.component';
 import { EmployeesService } from './employees/employees.sevice';
 import { AppService } from './app.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, SearchBarComponent],
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -50,9 +49,4 @@ export class AppComponent implements OnInit {
 
     });
   }
-
-  performSearch(searchTerm: string) {
-    this.app.searchTerm$.next(searchTerm);
-  }
-
 }

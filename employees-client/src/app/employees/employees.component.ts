@@ -11,10 +11,12 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { Employee } from '../models';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf } from '@angular/common';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { AppService } from '../app.service';
 
 @Component({
   selector: 'app-employees',
@@ -31,10 +33,9 @@ import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
     MatHeaderCellDef,
     MatButton,
     NgForOf,
-    NgIf,
     DatePipe,
-    MatIconButton,
     NgClass,
+    SearchBarComponent,
   ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
@@ -47,7 +48,10 @@ export class EmployeesComponent implements OnInit {
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
 
 
-  constructor(private employeesService: EmployeesService, private dialog: MatDialog) {
+  constructor(private employeesService: EmployeesService,
+              private dialog: MatDialog,
+              private app: AppService,
+  ) {
   }
 
   ngOnInit(): void {
@@ -78,6 +82,23 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
+  addEmployee(): void {
+    const dialogRef = this.dialog.open(AddItemDialogComponent,
+      {
+        data: {
+          type: 'employees',
+          action: 'add',
+        },
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.employeesService.loadEmployees();
+      }
+    });
+  }
+
+
   deleteEmployee(employee: Employee): void {
     if (confirm(`Are you sure you want to delete ${employee.firstName} ${employee.lastName}?`)) {
       this.employeesService.deleteEmployee(employee._id).subscribe(() => {
@@ -87,4 +108,9 @@ export class EmployeesComponent implements OnInit {
       });
     }
   }
+
+  performSearch(searchTerm: string) {
+    this.app.searchTerm$.next(searchTerm);
+  }
+
 }

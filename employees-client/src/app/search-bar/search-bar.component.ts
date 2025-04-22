@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInput, MatLabel } from '@angular/material/input';
-import { MatIconButton } from '@angular/material/button';
 import { AppService } from '../app.service';
 import { delay } from 'rxjs';
 
@@ -13,7 +12,6 @@ import { delay } from 'rxjs';
     FormsModule,
     MatInput,
     MatLabel,
-    MatIconButton,
   ],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
@@ -35,7 +33,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   onSearch() {
-    delay(1000)
+    delay(1000);
     this.search.emit(this.searchTerm);
   }
 }
