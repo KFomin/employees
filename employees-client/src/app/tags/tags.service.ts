@@ -20,8 +20,8 @@ export class TagsService {
   constructor(private appService: AppService) {
   }
 
-  loadTags() {
-    this.appService.get<Tag[]>(this.endpoint).subscribe((tags: Tag[]) => {
+  loadTags(search?: string) {
+    this.appService.get<Tag[]>(this.endpoint, search).subscribe((tags: Tag[]) => {
       this.tags$.next(tags);
     });
   }

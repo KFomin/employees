@@ -16,6 +16,16 @@ export class TagsService {
       .exec();
   }
 
+  async search(search: string): Promise<Tag[]> {
+    const regex = new RegExp(search, 'i');
+
+    return this.tagModel.find({
+      $or: [
+        { name: regex },
+      ],
+    }).exec();
+  }
+
   async create(tag: Tag): Promise<Tag> {
     const newTag = new this.tagModel(tag);
     return newTag.save();

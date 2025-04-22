@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException, Query } from '@nestjs/common';
 import { OfficesService } from './offices.service';
 import { Office } from './offices.schema';
 import { OfficeDto } from './office.dto';
@@ -11,7 +11,11 @@ export class OfficesController {
   }
 
   @Get()
-  async findAll(): Promise<Office[]> {
+  @Get()
+  async findAll(@Query('search') search?: string): Promise<Office[]> {
+    if (search) {
+      return this.officesService.search(search);
+    }
     return this.officesService.findAll();
   }
 

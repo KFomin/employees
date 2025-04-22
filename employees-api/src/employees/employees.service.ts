@@ -20,6 +20,23 @@ export class EmployeesService {
       .exec();
   }
 
+  async search(search: string): Promise<Employee[]> {
+    const regex = new RegExp(search.toLowerCase(), 'i');
+
+    return this.employeeModel.find({
+      $or: [
+        { firstname: regex },
+        { lastname: regex },
+        { phoneNo: regex },
+      ],
+    })
+      .populate('officeId')
+      .populate('tags')
+      .lean()
+      .exec();
+  }
+
+
   async create(createEmployeeDto: EmployeeDto): Promise<Employee> {
     const newEmployee = new this.employeeModel(createEmployeeDto);
     return newEmployee.save();

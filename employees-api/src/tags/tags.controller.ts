@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { Tag } from './tags.schema';
 import { TagDto } from './tag.dto';
@@ -9,7 +9,11 @@ export class TagsController {
   }
 
   @Get()
-  async findAll(): Promise<Tag[]> {
+  @Get()
+  async findAll(@Query('search') search?: string): Promise<Tag[]> {
+    if (search) {
+      return this.tagsService.search(search);
+    }
     return this.tagsService.findAll();
   }
 

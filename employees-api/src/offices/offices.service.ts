@@ -16,6 +16,18 @@ export class OfficesService {
       .exec();
   }
 
+  async search(search: string): Promise<Office[]> {
+    const regex = new RegExp(search, 'i');
+
+    return this.officeModel.find({
+      $or: [
+        { name: regex },
+        { city: regex }
+      ],
+    }).exec();
+  }
+
+
   async create(office: Office): Promise<Office> {
     const newOffice = new this.officeModel(office);
     return newOffice.save();

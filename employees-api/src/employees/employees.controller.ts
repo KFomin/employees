@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { Employee } from './employees.schema';
 import { EmployeeDto } from './employee.dto';
@@ -9,7 +9,10 @@ export class EmployeesController {
   }
 
   @Get()
-  async findAll(): Promise<Employee[]> {
+  async findAll(@Query('search') search?: string): Promise<Employee[]> {
+    if (search) {
+      return this.employeesService.search(search);
+    }
     return this.employeesService.findAll();
   }
 

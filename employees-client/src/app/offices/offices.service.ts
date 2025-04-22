@@ -18,8 +18,8 @@ export class OfficesService {
   constructor(private appService: AppService) {
   }
 
-  loadOffices() {
-    this.appService.get<Office[]>(this.endpoint).subscribe((offices: Office[]) => {
+  loadOffices(search?: string) {
+    this.appService.get<Office[]>(this.endpoint, search).subscribe((offices: Office[]) => {
       this.offices$.next(offices);
     });
   }

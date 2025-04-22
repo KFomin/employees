@@ -24,8 +24,8 @@ export class EmployeesService {
   constructor(private appService: AppService) {
   }
 
-  loadEmployees() {
-    this.appService.get<Employee[]>(this.endpoint).subscribe((employees) => {
+  loadEmployees(search?: string) {
+    this.appService.get<Employee[]>(this.endpoint, search).subscribe((employees) => {
       this.employees$.next(employees);
     });
   }
