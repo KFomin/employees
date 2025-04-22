@@ -111,11 +111,19 @@ export class AddItemDialogComponent implements OnInit {
             this.dialogRef.close(response);
           },
           (error) => {
-            console.error('Error while adding employee:', error);
+            console.error('Error while adding office:', error);
           },
         );
         break;
       case 'tags':
+        this.tagsService.createTag(dialogData).subscribe(
+          (response) => {
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while adding tag:', error);
+          },
+        );
         break;
       case 'employees':
         this.employeesService.createEmployee(dialogData).subscribe(
@@ -148,6 +156,15 @@ export class AddItemDialogComponent implements OnInit {
         );
         break;
       case 'tags':
+        this.tagsService.updateTag(this.data.entity._id, entityData).subscribe(
+          (response) => {
+            console.log('Tag updated successfully:', response);
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while updating tag:', error);
+          },
+        );
         break;
       case 'offices':
         this.officesService.updateOffice(this.data.entity._id, entityData).subscribe(
