@@ -134,28 +134,60 @@ export class AddItemDialogComponent implements OnInit {
   }
 
   onApplyClicked() {
-    const employeeData = this.getDialogData();
+    const entityData = this.getDialogData();
+    switch (this.data.type) {
+      case 'employees':
+        this.employeesService.updateEmployee(this.data.entity._id, entityData).subscribe(
+          (response) => {
+            console.log('Employee updated successfully:', response);
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while updating employee:', error);
+          },
+        );
+        break;
+      case 'tags':
+        break;
+      case 'offices':
+        this.officesService.updateOffice(this.data.entity._id, entityData).subscribe(
+          (response) => {
+            console.log('Office updated successfully:', response);
+            this.dialogRef.close(response);
+          },
+          (error) => {
+            console.error('Error while updating office:', error);
+          },
+        );
+        break;
+      default:
+        break;
+    }
 
-    this.employeesService.updateEmployee(this.data.entity._id, employeeData).subscribe(
-      (response) => {
-        console.log('Employee updated successfully:', response);
-        this.dialogRef.close(response);
-      },
-      (error) => {
-        console.error('Error while updating employee:', error);
-      },
-    );
   }
 
   getDialogData() {
     const tagMap = new Map(this.selectedTags.map(tag => [tag._id, tag]));
     const uniqueTags = [...tagMap.values()];
-    console.log(this.selectedTags);
-    return {
-      ...this.itemData,
-      birthdate: this.itemData.birthdate ? this.itemData.birthdate.toISOString() : null,
-      tags: uniqueTags.map(tag => tag._id),
-    };
+
+    switch (this.data.type) {
+      case 'employees':
+        return {
+          ...this.itemData,
+          birthdate: this.itemData.birthdate ? this.itemData.birthdate.toISOString() : null,
+          tags: uniqueTags.map(tag => tag._id),
+        };
+      case 'tags':
+        return {
+          ...this.itemData,
+        };
+      case 'offices':
+        return {
+          ...this.itemData,
+        };
+      default:
+        break;
+    }
   }
 
   isTagSelected(tag: Tag) {
