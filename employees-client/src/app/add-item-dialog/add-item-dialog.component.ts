@@ -78,7 +78,9 @@ export class AddItemDialogComponent implements OnInit {
         this.itemData.birthdate = new Date(this.itemData.birthdate);
       }
 
-      this.itemData.officeId = this.data.entity.officeId._id;
+      if (this.itemData.officeId) {
+        this.itemData.officeId = this.data.entity.officeId._id;
+      }
 
       if (this.data.entity.tags) {
         this.selectedTags = this.data.entity.tags.map((tag: Tag) => ({
@@ -184,11 +186,10 @@ export class AddItemDialogComponent implements OnInit {
   }
 
   getDialogData() {
-    const tagMap = new Map(this.selectedTags.map(tag => [tag._id, tag]));
-    const uniqueTags = [...tagMap.values()];
-
     switch (this.data.type) {
       case 'employees':
+        const tagMap = new Map(this.selectedTags.map(tag => [tag._id, tag]));
+        const uniqueTags = [...tagMap.values()];
         return {
           ...this.itemData,
           birthdate: this.itemData.birthdate ? this.itemData.birthdate.toISOString() : null,
