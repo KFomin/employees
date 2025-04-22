@@ -25,8 +25,8 @@ export class EmployeesService {
 
     return this.employeeModel.find({
       $or: [
-        { firstname: regex },
-        { lastname: regex },
+        { firstName: regex },
+        { lastName: regex },
         { phoneNo: regex },
       ],
     })

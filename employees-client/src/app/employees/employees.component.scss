@@ -1,3 +1,20 @@
 .mat-column-actions {
   text-align: right;
 }
+
+.employee-row {
+  cursor: pointer;
+}
+
+.employee-details {
+  padding: 16px;
+  background-color: rgba(224, 224, 224, 0.11);;
+}
+
+.employee-row:hover {
+  background-color: rgba(224, 224, 224, 0.11);
+}
+
+.detail-row-hidden {
+  display: none;
+}

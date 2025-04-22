@@ -11,9 +11,10 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { Employee } from '../models';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-employees',
@@ -29,12 +30,22 @@ import { MatDialog } from '@angular/material/dialog';
     MatCellDef,
     MatHeaderCellDef,
     MatButton,
+    NgForOf,
+    NgIf,
+    DatePipe,
+    MatIconButton,
+    NgClass,
   ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
 })
 export class EmployeesComponent implements OnInit {
   employees: Employee[] = [];
+  expandedEmployee: Employee | null = null;
+
+  columnsToDisplay = ['firstname', 'lastname', 'officeId', 'actions'];
+  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+
 
   constructor(private employeesService: EmployeesService, private dialog: MatDialog) {
   }
@@ -44,6 +55,10 @@ export class EmployeesComponent implements OnInit {
       this.employees = employees;
     });
     this.employeesService.loadEmployees();
+  }
+
+  toggleRow(employee: Employee): void {
+    this.expandedEmployee = this.expandedEmployee?._id === employee._id ? null : employee;
   }
 
   editEmployee(employee: Employee): void {

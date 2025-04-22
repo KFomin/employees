@@ -1,23 +1,26 @@
 <div class="employees-list">
-  <table mat-table [dataSource]="employees" class="mat-elevation-z8">
-    <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef>First Name</th>
-      <td mat-cell *matCellDef="let employee"> {{ employee.firstName }}</td>
+  <h2>Employees List</h2>
+  <table mat-table [dataSource]="employees" multiTemplateDataRows class="mat-elevation-z8">
+
+    <ng-container matColumnDef="firstname">
+      <th mat-header-cell *matHeaderCellDef> First Name</th>
+      <td mat-cell *matCellDef="let employee" (click)="toggleRow(employee)">
+        {{ employee.firstName }}
+      </td>
     </ng-container>
 
-    <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef>Last Name</th>
-      <td mat-cell *matCellDef="let employee"> {{ employee.lastName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="phoneNo">
-      <th mat-header-cell *matHeaderCellDef>Phone Number</th>
-      <td mat-cell *matCellDef="let employee"> {{ employee.phoneNo }}</td>
+    <ng-container matColumnDef="lastname">
+      <th mat-header-cell *matHeaderCellDef> Last Name</th>
+      <td mat-cell *matCellDef="let employee" (click)="toggleRow(employee)">
+        {{ employee.lastName }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="officeId">
-      <th mat-header-cell *matHeaderCellDef>Office</th>
-      <td mat-cell *matCellDef="let employee"> {{ employee.officeId.name }}</td>
+      <th mat-header-cell *matHeaderCellDef> Office</th>
+      <td mat-cell *matCellDef="let employee" (click)="toggleRow(employee)">
+        {{ employee.officeId?.name }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
@@ -28,7 +31,32 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['firstName', 'lastName', 'phoneNo', 'officeId', 'actions']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['firstName', 'lastName', 'phoneNo', 'officeId', 'actions'];"></tr>
+    <ng-container matColumnDef="expand">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let employee" class="expand-td">
+      </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let employee" [attr.colspan]="columnsToDisplayWithExpand.length">
+        @if (expandedEmployee?._id === employee._id) {
+          <div class="employee-details">
+            <p><strong>Phone Number:</strong> {{ employee.phoneNo }}</p>
+            <p><strong>Birthdate:</strong> {{ employee.birthdate | date:'mediumDate' }}</p>
+            <p><strong>Tags:</strong>
+              <ng-container *ngFor="let tag of employee.tags">
+                {{ tag.name }}
+              </ng-container>
+            </p>
+          </div>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let employee; columns: columnsToDisplayWithExpand;" class="employee-row"></tr>
+    <tr mat-row *matRowDef="let employee; columns: ['expandedDetail']"
+        [ngClass]="{'detail-row-hidden': expandedEmployee?._id !== employee._id}"></tr>
   </table>
 </div>
