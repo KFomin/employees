@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException, Query } from '@nestjs/common';
 import { OfficesService } from './offices.service';
-import { Office } from './offices.schema';
-import { OfficeDto } from './office.dto';
+import { Office, OfficeDto } from './offices.schema';
 import { EmployeesService } from '../employees/employees.service';
 
 @Controller('offices')
@@ -10,7 +9,6 @@ export class OfficesController {
               private readonly employeesService: EmployeesService) {
   }
 
-  @Get()
   @Get()
   async findAll(@Query('search') search?: string): Promise<Office[]> {
     if (search) {

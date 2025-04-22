@@ -1,7 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { Employee } from './employees.schema';
-import { EmployeeDto } from './employee.dto';
+import { Employee, EmployeeDto } from './employees.schema';
 
 @Controller('employees')
 export class EmployeesController {
