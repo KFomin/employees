@@ -59,19 +59,6 @@ Each tag document has the following structure:
 }
 ```
 
-### Connecting to MongoDB 📦
-
-To connect to the MongoDB database, we are using a connection string stored in a .env file. This file is not included in the repository for security reasons.
-
-Steps to create a .env file:
-Create a file named .env in the root of the project.
-
-Add the following line to the .env file:
-
-```
-MONGODB_URI=*I'll provide value for URI in e-mail letter*
-```
-
 ### Setting Up and Running the API Locally 🚀
 
 Clone the repository:
@@ -92,7 +79,20 @@ Install dependencies:
 npm install
 ```
 
-Create your .env file using the instructions provided above.
+
+### Connecting to MongoDB 📦
+
+To connect to the MongoDB database, we are using a connection string stored in a .env file. This file is not included in the repository for security reasons.
+
+Steps to create a .env file:
+Create a file named .env in the root of the project.
+
+Add the following line to the .env file:
+
+```
+MONGODB_URI=*I'll provide value for URI in e-mail letter*
+```
+
 
 Run the API:
 
