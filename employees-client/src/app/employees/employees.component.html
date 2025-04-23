@@ -49,7 +49,7 @@
             <p><strong>Birthdate:</strong> {{ employee.birthdate | date:'mediumDate' }}</p>
             <p><strong>Tags:</strong>
               <ng-container *ngFor="let tag of employee.tags">
-                {{ tag.name }}
+                <span class="tag">{{ tag.name }}</span>
               </ng-container>
             </p>
           </div>
