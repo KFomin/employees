@@ -10,6 +10,28 @@ export class EmployeesService {
   ) {
   }
 
+  tagLookup = {
+    from: 'tags',
+    localField: 'tags',
+    foreignField: '_id',
+    as: 'tagDetails',
+  };
+
+  officeLookup = {
+    from: 'offices',
+    localField: 'officeId',
+    foreignField: '_id',
+    as: 'officeDetails',
+  };
+
+  match = (regex: RegExp) => [
+    { firstName: regex },
+    { lastName: regex },
+    { phoneNo: regex },
+    { 'tagDetails.name': regex },
+    { 'officeDetails.name': regex },
+  ];
+
   async findAll(): Promise<Employee[]> {
     return this.employeeModel
       .find()
@@ -22,16 +44,23 @@ export class EmployeesService {
   async search(search: string): Promise<Employee[]> {
     const regex = new RegExp(search.toLowerCase(), 'i');
 
-    return this.employeeModel.find({
-      $or: [
-        { firstName: regex },
-        { lastName: regex },
-        { phoneNo: regex },
-      ],
-    })
-      .populate('officeId')
-      .populate('tags')
-      .lean()
+
+    return this.employeeModel.aggregate([
+      { $lookup: this.tagLookup },
+      { $lookup: this.officeLookup },
+      { $match: { $or: this.match(regex) } },
+      {
+        $project: {
+          _id: 1,
+          firstName: 1,
+          lastName: 1,
+          phoneNo: 1,
+          birthdate: 1,
+          officeId: { $arrayElemAt: ['$officeDetails', 0] },
+          tags: '$tagDetails',
+        },
+      },
+    ])
       .exec();
   }
 
